@@ -1,0 +1,114 @@
+
+
+
+       READ          WRITE
+----------------------------
+00            r0
+..            ...
+2F            r31
+
+30
+
+40
+
+50
+
+60
+
+70
+
+80
+
+90
+
+A0     alu.inc    alu.a
+A1     alu.dec    alu.b
+A2     alu.add    br.a
+A3     alu.sub    br.eq
+A4     alu.or     br.ne
+A5     alu.xor    br.gt
+A6     alu.and    br.lt
+A7     alu.not    br.hi
+A8     alu.shift  br.lo
+A9
+AA
+AB
+AC
+AD
+AE
+AF
+
+B0   		bus0.ptr
+B1              .b
+B2              .h
+B3              .w
+B4   		bus1.ptr
+B5              .b
+B6              .h
+B7              .w
+B8   		bus2.ptr
+B9              .b
+BA              .h
+BB              .w
+BC   		bus3.ptr
+BD              .b
+BE              .h
+BF              .w
+
+C0
+
+D0
+
+E0
+
+F0
+F1
+F2
+F3
+F4
+F5
+F6
+F7
+F8
+F9
+FA
+FB
+FC            sp
+FD     imm16      sp.add
+FE     imm32      call
+FF     pc         jmp
+
+########################################################################
+# EXAMPLE ASSEMBLY
+#
+
+.alloc stack u32 15
+.alloc stack_end u32 1
+
+.string str1 "This is a string"
+.string str2 "This is another string"
+
+START:
+	abs(stack_end) > sp
+
+	abs(str1) > r0
+	abs(str2) > r1
+	call(strcmp)
+	
+strcmp:
+	r0 > bus0.p
+	r1 > bus1.p
+strcmp_loop:
+	bus0.byte > alu.a
+	bus1.byte > alu.b
+	br.ne(strcmp_done)
+	imm16(0) > alu.b
+	br.ne(strcmp_loop)
+strcmp_done:
+	alu.sub > r0
+	return
+
+strcpy:
+	r0 > bus.p0
+	r0 > bus.
+
